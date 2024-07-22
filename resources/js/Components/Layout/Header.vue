@@ -29,6 +29,13 @@ const guestItems = ref([
 
 const authItems = ref([
     {
+        label: 'Создать пост',
+        icon: 'pi pi-plus',
+        command: () => {
+            router.get(route('articles.create'))
+        }
+    },
+    {
         label: 'Выход',
         icon: 'pi pi-sign-out',
         command: () => {
