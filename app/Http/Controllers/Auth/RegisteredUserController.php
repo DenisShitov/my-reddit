@@ -18,9 +18,14 @@ class RegisteredUserController extends Controller
     /**
      * Display the registration view.
      */
-    public function create(): Response
+    public function create(): RedirectResponse
     {
-        return Inertia::render('Auth/Register');
+//        return Inertia::render('Auth/Register');
+        return redirect()->back()->with('modal', json_encode([
+            'component' => 'Registration',
+            'title' => 'Регистрация нового пользователя',
+            'cleanOnClose' => true
+        ]));
     }
 
     /**
@@ -42,10 +47,14 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        event(new Registered($user));
+//        event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->route('home')->with('modal', json_encode([
+            'component' => 'MustVerifyEmail',
+            'title' => 'Регистрация прошла успешно',
+            'cleanOnClose' => true
+        ]));
     }
 }

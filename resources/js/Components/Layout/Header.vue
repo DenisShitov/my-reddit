@@ -2,6 +2,7 @@
 import Menubar from 'primevue/menubar';
 import {useAuth} from "@/use/useAuth";
 import {ref} from "vue";
+import {router} from "@inertiajs/vue3";
 
 const {isAuth} = useAuth()
 
@@ -10,14 +11,18 @@ const guestItems = ref([
         label: 'Вход',
         icon: 'pi pi-sign-in',
         command: () => {
-
+            router.get(route('login'), {}, {
+                preserveState: true,
+            })
         }
     },
     {
         label: 'Регистрация',
         icon: 'pi pi-user-plus',
         command: () => {
-
+            router.get(route('register'), {}, {
+                preserveState: true,
+            })
         }
     },
 ])

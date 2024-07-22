@@ -5,6 +5,7 @@ import {createApp, h, DefineComponent} from 'vue';
 import {createInertiaApp} from '@inertiajs/vue3';
 import {resolvePageComponent} from 'laravel-vite-plugin/inertia-helpers';
 import {ZiggyVue} from '../../vendor/tightenco/ziggy';
+import DialogService from 'primevue/dialogservice';
 
 import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
@@ -23,6 +24,7 @@ createInertiaApp({
                     preset: Aura
                 }
             })
+            .use(DialogService)
             .mount(el);
     },
     progress: {
