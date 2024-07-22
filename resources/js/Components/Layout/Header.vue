@@ -27,7 +27,15 @@ const guestItems = ref([
     },
 ])
 
-const authItems = ref([])
+const authItems = ref([
+    {
+        label: 'Выход',
+        icon: 'pi pi-sign-out',
+        command: () => {
+            router.post(route('logout'))
+        }
+    },
+])
 
 </script>
 

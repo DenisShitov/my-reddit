@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import DynamicDialog from "primevue/dynamicdialog";
 import {useDialog} from "primevue/usedialog";
-import {Component, computed, ComputedRef, defineAsyncComponent, watchEffect} from "vue";
+import {Component, computed, ComputedRef, defineAsyncComponent, inject, watch} from "vue";
 import {usePage} from "@inertiajs/vue3";
 
 interface IParsedModal {
@@ -13,8 +13,10 @@ interface IParsedModal {
 const page = usePage()
 const modal: ComputedRef<string> = computed(() => page.props.flash.modal)
 const dialog = useDialog();
+const dialogRef: any = inject('dialogRef');
 
-watchEffect(() => {
+watch(modal, () => {
+
     if (modal.value) {
         const modalParsed: IParsedModal = JSON.parse(modal.value)
         const openDialog = (component: Component, title: string) => {
@@ -32,10 +34,13 @@ watchEffect(() => {
                 },
                 onClose: () => {
                     if (modalParsed.cleanOnClose) page.props.flash.modal = null
+                },
+                onOpen: () => {
+                    console.log(dialogRef)
+
                 }
             })
         };
-
 
         openDialog(defineAsyncComponent(() => import(`../Modal/${modalParsed.component}.vue`)), modalParsed.title)
     }
