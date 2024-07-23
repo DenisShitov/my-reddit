@@ -11,9 +11,12 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('articles', function (Blueprint $table) {
-            $table->uuid();
+            $table->uuid('id');
             $table->text('title');
+            $table->text('content');
+            $table->dateTime('publish_at');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

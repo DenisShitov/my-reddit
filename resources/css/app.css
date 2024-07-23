@@ -1,4 +1,5 @@
 @import 'primeicons/primeicons.css';
+@import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 @tailwind base;
 @tailwind components;

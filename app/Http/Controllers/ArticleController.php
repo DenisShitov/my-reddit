@@ -21,7 +21,8 @@ class ArticleController extends Controller
      */
     public function create()
     {
-        return Inertia::render('CreateArticle');
+        if (!auth()->check()) abort(403);
+        return Inertia::render('Article/CreateArticle');
     }
 
     /**
@@ -29,7 +30,15 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'title' => ['required', 'string'],
+            'content' => ['required', 'string'],
+            'publish_at' => ['nullable']
+        ]);
+
+        $article = Article::create($validated);
+
+        return redirect()->route('articles.show', $article->id);
     }
 
     /**
@@ -37,7 +46,9 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        //
+        return Inertia::render('Article/Article', [
+            'article' => fn() => $article
+        ]);
     }
 
     /**
