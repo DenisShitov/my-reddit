@@ -1,10 +1,18 @@
 @import 'primeicons/primeicons.css';
+@import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+    h1 {
+        @apply text-4xl font-semibold
+    }
+
+    h4 {
+        @apply text-lg font-semibold
+    }
     .container {
         @apply mx-auto
     }
