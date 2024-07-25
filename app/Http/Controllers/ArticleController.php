@@ -3,11 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\User;
+use App\Services\ArticleService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ArticleController extends Controller
 {
+    protected ArticleService $articleService;
+
+    public function __construct(ArticleService $articleService)
+    {
+        $this->articleService = $articleService;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -30,15 +38,21 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->check()) abort(403);
+
         $validated = $request->validate([
             'title' => ['required', 'string'],
             'content' => ['required', 'string'],
-            'publish_at' => ['nullable']
+            'publish_at' => ['nullable'],
         ]);
 
-        $article = Article::create($validated);
+        $newArticle = $this->articleService->create($validated);
 
-        return redirect()->route('articles.show', $article->id);
+        if ($request->file('preview')) {
+            $this->articleService->addPreview($newArticle);
+        }
+
+        return to_route('profile.articles');
     }
 
     /**
@@ -46,6 +60,8 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
+        $article->getMedia('preview');
+
         return Inertia::render('Article/Article', [
             'article' => fn() => $article
         ]);
@@ -72,6 +88,12 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
-        //
+        $article->delete();
+
+        $user = User::find(auth()->id());
+
+        $articles = $this->articleService->getUserArticles($user);
+
+        Inertia::share('articles', fn() => $articles);
     }
 }

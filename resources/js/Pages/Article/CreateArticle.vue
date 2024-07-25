@@ -19,19 +19,32 @@ interface IArticleForm {
 const form: IArticleForm = useForm({
     title: null,
     content: null,
-    preview: null,
+    preview: null
 })
 
-const fileupload: Ref = ref();
+const fileUpload: Ref = ref()
 
 const onSelectPreview = (event: FileUploadSelectEvent) => {
     form.preview = event.files[0]
 };
 
+const onClearPreview = () => {
+    fileUpload.value.clear()
+    form.preview = null
+}
+
+const onSubmit = () => {
+    form.post(
+        route('articles.store'),
+        form
+    )
+}
+
 </script>
 
 <template>
     <layout>
+        <h1 class="mb-2">Создать пост</h1>
         <div class="flex flex-col items-start gap-4 h-full box-border">
             <InputText
                 type="text"
@@ -39,15 +52,8 @@ const onSelectPreview = (event: FileUploadSelectEvent) => {
                 v-model="form.title"
                 class="w-full box-border"
             />
-            <FileUpload
-                ref="fileupload"
-                mode="basic"
-                accept="image/*"
-                :multiple="false"
-                :maxFileSize="5000000"
-                @select="onSelectPreview"
-            />
-            <img class="h-[80px] object-contain" :src="form.preview.objectURL"/>
+
+
             <div class="">
                 <quill-editor
                     toolbar="full"
@@ -59,6 +65,24 @@ const onSelectPreview = (event: FileUploadSelectEvent) => {
         </div>
 
         <template #aside>
+            <div class="mb-2">
+                <FileUpload
+                    ref="fileUpload"
+                    mode="basic"
+                    choose-label="Загрузить превью"
+                    accept="image/*"
+                    :multiple="false"
+                    :maxFileSize="1024*1024*1"
+                    @select="onSelectPreview"
+                />
+            </div>
+
+            <div v-if="form.preview" class="rounded-md overflow-hidden relative w-full aspect-square mb-2 mx-auto">
+                <img class="object-cover w-full h-full" :src="form.preview?.objectURL"/>
+                <div class="absolute top-2 right-1">
+                    <Button @click="onClearPreview" severity="secondary" icon="pi pi-trash"/>
+                </div>
+            </div>
             <div class="sticky top-2">
                 <panel
                     :pt="{
@@ -66,11 +90,10 @@ const onSelectPreview = (event: FileUploadSelectEvent) => {
                     }"
                 >
                     <div class="flex flex-col gap-2 ">
-                        <Button label="Сохранить" @click="form.post(route('articles.store'), form)"/>
+                        <Button label="Сохранить" @click="onSubmit"/>
                     </div>
                 </panel>
             </div>
-
         </template>
     </layout>
 </template>

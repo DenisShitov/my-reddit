@@ -11,10 +11,12 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('articles', function (Blueprint $table) {
-            $table->uuid('id');
+            $table->id();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users');
             $table->text('title');
             $table->text('content');
-            $table->dateTime('publish_at');
+            $table->dateTime('publish_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
